@@ -130,7 +130,7 @@
     background-color: green;
   }
 
-  .villageTile {
+  .townTile {
     background-color: brown;
   }
 
@@ -151,6 +151,7 @@
   .row {
     grid-template-columns: repeat(11, 38px);
   }
+
   #Spring {
     width: 30px;
     height: 30px;
@@ -180,6 +181,7 @@
   .row {
     grid-template-columns: repeat(11, 45px);
   }
+
   #Spring {
     width: 40px;
     height: 40px;
@@ -230,6 +232,7 @@
   #placement {
     grid-area: 3 / 2 / 4 / 3;
   }
+
   #Spring {
     width: 70px;
     height: 70px;
@@ -259,6 +262,7 @@
   .row {
     grid-template-columns: repeat(11, 45px);
   }
+
   #Spring {
     width: 90px;
     height: 90px;

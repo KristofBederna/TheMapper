@@ -28,6 +28,26 @@ function isMountain(i, j) {
   return false;
 }
 
+function isVillage(i, j) {
+  return grid[i][j].className === "townTile";
+}
+
+function isWater(i, j) {
+  return grid[i][j].className === "waterTile";
+}
+
+function isForest(i, j) {
+  return grid[i][j].className === "forestTile";
+}
+
+function isWater(i, j) {
+  return grid[i][j].className === "waterTile";
+}
+
+function isFarm(i, j) {
+  return grid[i][j].className === "farmTile";
+}
+
 
 //Feltölt egy 11x11-es pályát 0-kkal és 1-ekkel az alapján, hogy üres vagy hegy van rajta a grid-container classban
 const gridContainer = document.querySelector('.grid-container');
@@ -49,6 +69,7 @@ for (let i = 0; i < 11; i++) {
 
 //A pálya megvalósítása egy mátrixban
 let grid = [];
+let backgroundGrid = [];
 
 //Átkonvertálja a divekből álló pályát egy mátrixba, hogy a JS oldalon könnyebben kezeljük, majd behelyezi a grid arraybe
 function convertToMatrix() {
@@ -74,10 +95,22 @@ function drawMap() {
         gridItem.innerHTML = 1;
         gridItem.className = 'mountainTile';
       }
-      //if (isVillage())
-      //if (isWater())
-      //if (isForest())
-      //if (isFarm())
+      if (isVillage(i, j)) {
+        gridItem.innerHTML = 1;
+        gridItem.className = 'townTile';
+      }
+      if (isWater(i, j)) {
+        gridItem.innerHTML = 1;
+        gridItem.className = 'waterTile';
+      }
+      if (isForest(i, j)) {
+        gridItem.innerHTML = 1;
+        gridItem.className = 'forestTile';
+      }
+      if (isFarm(i, j)) {
+        gridItem.innerHTML = 1;
+        gridItem.className = 'farmTile';
+      }
       Row.appendChild(gridItem);
     }
   }
@@ -265,6 +298,7 @@ function selectNextElement() {
     for (let j = 0; j < 3; j++) {
       if (nextItem[i][j] === 1) {
         nextItemArray[i][j].innerHTML = 1;
+        nextItemArray[i][j].className = mixedElements[0].type + "Tile";
       }
     }
   }
@@ -295,7 +329,7 @@ function mirrorClicked() {
 }
 
 function rotateElement(orientation) {
-  switch(orientation) {
+  switch (orientation) {
     case 1:
       rotate90DegreesClockwise();
       break;
@@ -322,15 +356,7 @@ function rotate90DegreesClockwise() {
   }
 
   copyMatrix(tempMatrix, nextItemArray);
-  
-}
 
-function copyMatrix(source, destination) {
-  for (let row = 0; row < 3; row++) {
-    for (let col = 0; col < 3; col++) {
-      destination[row][col] = source[row][col];
-    }
-  }
 }
 
 function updateElement() {
@@ -351,8 +377,7 @@ function updateElement() {
 }
 
 function mirrorElement() {
-  for (let i = 0; i < 3; i++)
-  {
+  for (let i = 0; i < 3; i++) {
     let curRow = nextItemArray[i];
     let mirrorRow = [];
     for (let j = 2; j >= 0; j--) {
@@ -363,12 +388,132 @@ function mirrorElement() {
   updateElement();
 }
 
+
 function update() {
+  updateMap();
+  updateElements();
+}
+
+function updateMap() {
   drawMap();
   convertToMatrix();
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      grid[i][j].addEventListener("mouseenter", () => previewDraw(i, j));
+      grid[i][j].addEventListener("mouseleave", checkForSaving)
+    }
+  }
+  deepCopyGrid(grid, backgroundGrid);
+}
+
+function updateElements() {
   generateNextElement();
   selectNextElement();
 }
 
+document.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    placeElementOnGrid();
+  }
+});
+
 convertToMatrix();
 update();
+
+
+function canDraw(i, j) {
+  //Ellenőrzi, hogy a 3x3-mas lerakó mátrix része-e a pályának
+  if (i + 3 > 11 || j + 3 > 11) {
+    for (let k = i; k < i + 3; k++) {
+      for (let l = j; l < j + 3; l++) {
+        grid[k][l].style.border = "thick double crimson";
+      }
+    }
+    console.log("outside bounds");
+    return false;
+  }
+
+  //Ellenőrzi, hogy a 3x3-mas terület, ahová le akarjuk rakni, már tartalmaz-e olyan cellát, amiben van elem
+  let returnValue = true;
+  for (let k = i; k < i + 3; k++) {
+    for (let l = j; l < j + 3; l++) {
+      grid[k][l].style.border = "thick double lightgreen";
+      if (backgroundGrid[k][l].innerHTML == 1) {
+        console.log("collision");
+        //Ellenőrzi, hogy a 3x3-mas területen ütközne-e a cella egy olyan cellával, amit le akarunk rakni
+        if (nextItemArray[k - i][l - j].innerHTML == 1) {
+          console.log("collisionUltra");
+          grid[k][l].style.border = "thick double crimson";
+          returnValue = false;
+        }
+      }
+    }
+  }
+  return returnValue;
+}
+
+function previewDraw(i, j) {
+  if (canDraw(i, j)) {
+    for (let k = i; k < i + 3; k++) {
+      for (let l = j; l < j + 3; l++) {
+        if (nextItemArray[k - i][l - j].innerHTML == 1) {
+          console.log(i + " " + j + " placed")
+          grid[k][l].innerHTML = nextItemArray[k - i][l - j].innerHTML;
+          grid[k][l].className = nextItemArray[k - i][l - j].className;
+          grid[k][l].style.border = "thick double lightgreen";
+        }
+      }
+    }
+  }
+}
+
+let save = false;
+function placeElementOnGrid() {
+  if (canDraw()) {//Todo: megoldani, hogy az enter nyomása ne legyen lehetséges, amikor a canDraw false
+    save = true;
+    mixedElements.splice(0, 1);
+    updateElements();
+    console.log("saving..");
+  } else {
+    alert("can't place")
+  }
+}
+
+function checkForSaving() {
+  if (save) {
+    console.log("left cell with saving");
+    backgroundGrid = [];
+    deepCopyGrid(grid, backgroundGrid);
+    save = false;
+    return;
+  }
+  grid = [];
+  deepCopyGrid(backgroundGrid, grid);
+  updateMap();
+  console.log("left cell without saving");
+}
+
+//Utils
+function copyMatrix(source, destination) {
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      destination[row][col] = source[row][col];
+    }
+  }
+}
+
+function deepCopyGrid(source, destination) {
+  for (let i = 0; i < 11; i++) {
+    const Row = document.createElement('div');
+    Row.className = 'row';
+    for (let j = 0; j < 11; j++) {
+      const Cell = document.createElement('div');
+      Cell.innerHTML = source[i][j].innerHTML;
+      Cell.className = source[i][j].className;
+      Row.append(Cell);
+    }
+    destination.push(Array.from(Row.children));
+  }
+  console.log("copied.")
+}
