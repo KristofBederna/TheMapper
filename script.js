@@ -1,4 +1,10 @@
 let timeLeft = 28;
+let orient = 0;
+
+let rotateItemButton = document.getElementById("rotateItemButton");
+rotateItemButton.addEventListener("click", rotateClicked);
+let mirrorItemButton = document.getElementById("mirrorItemButton");
+mirrorItemButton.addEventListener("click", mirrorClicked);
 
 //A pálya kirajzolása
 
@@ -77,7 +83,7 @@ function drawMap() {
   }
 }
 
-//Elemek beimportálása
+//Elemek importálása
 const elements = [
   {
     time: 2,
@@ -248,7 +254,7 @@ function generateNextElement() {
       previewItem.innerHTML = 0;
       Row.appendChild(previewItem);
     }
-    nextItemArray.push(Row.children);
+    nextItemArray.push(Array.from(Row.children));
   }
 }
 
@@ -262,13 +268,99 @@ function selectNextElement() {
       }
     }
   }
+  timeCounterDraw();
+  //TODO: Remove element from mixedElements after placement
+}
 
+function timeCounterDraw() {
   let time = document.createElement('div');
   time.className = "timeCounter";
   time.innerHTML = "Time to place:" + mixedElements[0].time;
   timeLeft -= mixedElements[0].time;
   nextItemContainer.append(time);
-  mixedElements.splice(0, 1);
+}
+
+function rotateClicked() {
+  if (orient != 3) {
+    orient++;
+  }
+  else if (orient == 3) {
+    orient = 0;
+  }
+  rotateElement(orient);
+}
+
+function mirrorClicked() {
+  mirrorElement();
+}
+
+function rotateElement(orientation) {
+  switch(orientation) {
+    case 1:
+      rotate90DegreesClockwise();
+      break;
+    case 2:
+      rotate90DegreesClockwise()
+      break;
+    case 3:
+      rotate90DegreesClockwise()
+      break;
+    case 0:
+      rotate90DegreesClockwise()
+      break;
+  }
+  updateElement();
+}
+
+function rotate90DegreesClockwise() {
+  const tempMatrix = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      tempMatrix[row][col] = nextItemArray[2 - col][row];
+    }
+  }
+
+  copyMatrix(tempMatrix, nextItemArray);
+  
+}
+
+function copyMatrix(source, destination) {
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      destination[row][col] = source[row][col];
+    }
+  }
+}
+
+function updateElement() {
+  nextItemContainer.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const Row = document.createElement('div');
+    Row.className = 'row';
+    nextItemContainer.append(Row);
+    for (let j = 0; j < 3; j++) {
+      const previewItem = document.createElement('div');
+      previewItem.className = nextItemArray[i][j].className;
+      previewItem.innerHTML = nextItemArray[i][j].innerHTML;
+      Row.appendChild(previewItem);
+    }
+    nextItemArray.push(Array.from(Row.children));
+  }
+  timeCounterDraw();
+}
+
+function mirrorElement() {
+  for (let i = 0; i < 3; i++)
+  {
+    let curRow = nextItemArray[i];
+    let mirrorRow = [];
+    for (let j = 2; j >= 0; j--) {
+      mirrorRow.push(curRow[j]);
+    }
+    nextItemArray[i] = mirrorRow;
+  }
+  updateElement();
 }
 
 function update() {
