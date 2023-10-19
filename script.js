@@ -1,11 +1,3 @@
-let timeLeft = 28;
-let orient = 0;
-
-let rotateItemButton = document.getElementById("rotateItemButton");
-rotateItemButton.addEventListener("click", rotateClicked);
-let mirrorItemButton = document.getElementById("mirrorItemButton");
-mirrorItemButton.addEventListener("click", mirrorClicked);
-
 //A pálya kirajzolása
 
 //Hegyek elhelyezése
@@ -27,23 +19,19 @@ function isMountain(i, j) {
   }
   return false;
 }
-
+//Falvak elhelyezése
 function isVillage(i, j) {
   return grid[i][j].className === "townTile";
 }
-
+//Folyók elhelyezése
 function isWater(i, j) {
   return grid[i][j].className === "waterTile";
 }
-
+//Erdők elhelyezése
 function isForest(i, j) {
   return grid[i][j].className === "forestTile";
 }
-
-function isWater(i, j) {
-  return grid[i][j].className === "waterTile";
-}
-
+//Farmok elhelyezése
 function isFarm(i, j) {
   return grid[i][j].className === "farmTile";
 }
@@ -266,8 +254,8 @@ const elements = [
 
 //Elemek randomizálása
 let mixedElements = [];
-for (let i = 0; i < elements.length; i++) {
-  mixedElements.push(elements[i]);
+for (const element of elements) {
+  mixedElements.push(element);
 }
 mixedElements.sort(() => Math.random() - 0.5);
 
@@ -303,17 +291,21 @@ function selectNextElement() {
     }
   }
   timeCounterDraw();
-  //TODO: Remove element from mixedElements after placement
 }
 
 function timeCounterDraw() {
   let time = document.createElement('div');
   time.className = "timeCounter";
   time.innerHTML = "Time to place:" + mixedElements[0].time;
-  timeLeft -= mixedElements[0].time;
   nextItemContainer.append(time);
 }
 
+const rotateItemButton = document.getElementById("rotateItemButton");
+rotateItemButton.addEventListener("click", rotateClicked);
+const mirrorItemButton = document.getElementById("mirrorItemButton");
+mirrorItemButton.addEventListener("click", mirrorClicked);
+
+let orient = 0;
 function rotateClicked() {
   if (orient != 3) {
     orient++;
@@ -401,12 +393,14 @@ function updateMap() {
     for (let j = 0; j < 11; j++) {
       grid[i][j].addEventListener("mouseenter", () => previewDraw(i, j));
       grid[i][j].addEventListener("mouseleave", checkForSaving)
+      grid[i][j].addEventListener("mouseup", placeElementOnGrid)
     }
   }
   deepCopyGrid(grid, backgroundGrid);
 }
 
 function updateElements() {
+  mixedElements.splice(0, 1);
   generateNextElement();
   selectNextElement();
 }
@@ -416,41 +410,58 @@ document.addEventListener("keypress", function (event) {
     event.preventDefault();
     placeElementOnGrid();
   }
+  if (event.key === "r") {
+    event.preventDefault();
+    rotateClicked();
+  }
+  if (event.key === "m") {
+    event.preventDefault();
+    mirrorClicked();
+  }
+  if (event.key === "R") {
+    event.preventDefault();
+    rotateClicked();
+  }
+  if (event.key === "M") {
+    event.preventDefault();
+    mirrorClicked();
+  }
 });
 
 convertToMatrix();
 update();
 
-
+let canPlace = true;
 function canDraw(i, j) {
   //Ellenőrzi, hogy a 3x3-mas lerakó mátrix része-e a pályának
   if (i + 3 > 11 || j + 3 > 11) {
     for (let k = i; k < i + 3; k++) {
       for (let l = j; l < j + 3; l++) {
-        grid[k][l].style.border = "thick double crimson";
+        try {
+          grid[k][l].style.border = "thick double crimson"; 
+        } catch (error) {}
       }
     }
-    console.log("outside bounds");
-    return false;
+    canPlace = false;
+    return canPlace;
   }
 
   //Ellenőrzi, hogy a 3x3-mas terület, ahová le akarjuk rakni, már tartalmaz-e olyan cellát, amiben van elem
-  let returnValue = true;
   for (let k = i; k < i + 3; k++) {
     for (let l = j; l < j + 3; l++) {
       grid[k][l].style.border = "thick double lightgreen";
       if (backgroundGrid[k][l].innerHTML == 1) {
-        console.log("collision");
         //Ellenőrzi, hogy a 3x3-mas területen ütközne-e a cella egy olyan cellával, amit le akarunk rakni
         if (nextItemArray[k - i][l - j].innerHTML == 1) {
-          console.log("collisionUltra");
           grid[k][l].style.border = "thick double crimson";
-          returnValue = false;
+          canPlace = false;
+          return canPlace;
         }
       }
     }
   }
-  return returnValue;
+  canPlace = true;
+  return canPlace;
 }
 
 function previewDraw(i, j) {
@@ -458,7 +469,6 @@ function previewDraw(i, j) {
     for (let k = i; k < i + 3; k++) {
       for (let l = j; l < j + 3; l++) {
         if (nextItemArray[k - i][l - j].innerHTML == 1) {
-          console.log(i + " " + j + " placed")
           grid[k][l].innerHTML = nextItemArray[k - i][l - j].innerHTML;
           grid[k][l].className = nextItemArray[k - i][l - j].className;
           grid[k][l].style.border = "thick double lightgreen";
@@ -470,11 +480,14 @@ function previewDraw(i, j) {
 
 let save = false;
 function placeElementOnGrid() {
-  if (canDraw()) {//Todo: megoldani, hogy az enter nyomása ne legyen lehetséges, amikor a canDraw false
+  if (canPlace) {
+    canPlace = false;
     save = true;
-    mixedElements.splice(0, 1);
+    for (let i = 0; i < mixedElements[0].time; i++) {
+      timeLeft--;
+      updateSeasons()
+    }
     updateElements();
-    console.log("saving..");
   } else {
     alert("can't place")
   }
@@ -482,7 +495,6 @@ function placeElementOnGrid() {
 
 function checkForSaving() {
   if (save) {
-    console.log("left cell with saving");
     backgroundGrid = [];
     deepCopyGrid(grid, backgroundGrid);
     save = false;
@@ -491,7 +503,31 @@ function checkForSaving() {
   grid = [];
   deepCopyGrid(backgroundGrid, grid);
   updateMap();
-  console.log("left cell without saving");
+}
+
+let timeLeft = 28;
+const seasonTimeLeft = document.getElementById("seasonTimeLeft");
+
+const seasons = Array.from(document.getElementById("seasons").children);
+let currentSeason = seasons[0];
+const curentSeasonText = document.getElementById("currentSeason");
+curentSeasonText.innerHTML = seasons[0].innerHTML;
+seasonTimeLeft.innerHTML = "Time left of this season: 7";
+function updateSeasons() {
+
+  if (timeLeft % 7 == 0) {
+    seasons.splice(0, 1);
+    currentSeason = seasons[0];
+  }
+  if (timeLeft <= 0) {
+    console.log("Game Over!") //TODO: Implement game over
+  }
+  curentSeasonText.innerHTML = seasons[0].innerHTML;
+  let daysLeft = timeLeft % 7;
+  if (timeLeft % 7 == 0) {
+    daysLeft += 7;
+  }
+  seasonTimeLeft.innerHTML = "Time left of this season:" + daysLeft;
 }
 
 //Utils
@@ -515,5 +551,4 @@ function deepCopyGrid(source, destination) {
     }
     destination.push(Array.from(Row.children));
   }
-  console.log("copied.")
 }
