@@ -46,9 +46,7 @@ for (let i = 0; i < 11; i++) {
   for (let j = 0; j < 11; j++) {
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
-    gridItem.innerHTML = 0;
     if (isMountain(i, j)) {
-      gridItem.innerHTML = 1;
       gridItem.className = 'mountainTile';
     }
     Row.appendChild(gridItem);
@@ -69,7 +67,9 @@ function convertToMatrix() {
   }
 }
 
+//Kirajzolja a térképet
 function drawMap() {
+  //Először lenullázza a teljes térképet majd az egészet feltölti az adatokkal
   gridContainer.innerHTML = "";
   for (let i = 0; i < 11; i++) {
     const Row = document.createElement('div');
@@ -78,25 +78,19 @@ function drawMap() {
     for (let j = 0; j < 11; j++) {
       const gridItem = document.createElement('div');
       gridItem.className = 'grid-item';
-      gridItem.innerHTML = grid[i][j].innerHTML;
       if (isMountain(i, j)) {
-        gridItem.innerHTML = 1;
         gridItem.className = 'mountainTile';
       }
       if (isVillage(i, j)) {
-        gridItem.innerHTML = 1;
         gridItem.className = 'townTile';
       }
       if (isWater(i, j)) {
-        gridItem.innerHTML = 1;
         gridItem.className = 'waterTile';
       }
       if (isForest(i, j)) {
-        gridItem.innerHTML = 1;
         gridItem.className = 'forestTile';
       }
       if (isFarm(i, j)) {
-        gridItem.innerHTML = 1;
         gridItem.className = 'farmTile';
       }
       Row.appendChild(gridItem);
@@ -272,7 +266,6 @@ function generateNextElement() {
     for (let j = 0; j < 3; j++) {
       const previewItem = document.createElement('div');
       previewItem.className = 'preview-item';
-      previewItem.innerHTML = 0;
       Row.appendChild(previewItem);
     }
     nextItemArray.push(Array.from(Row.children));
@@ -285,7 +278,6 @@ function selectNextElement() {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (nextItem[i][j] === 1) {
-        nextItemArray[i][j].innerHTML = 1;
         nextItemArray[i][j].className = mixedElements[0].type + "Tile";
       }
     }
@@ -293,6 +285,7 @@ function selectNextElement() {
   timeCounterDraw();
 }
 
+//Kirajzolja a következő elem lerakásához szükséges időt
 function timeCounterDraw() {
   let time = document.createElement('div');
   time.className = "timeCounter";
@@ -300,11 +293,13 @@ function timeCounterDraw() {
   nextItemContainer.append(time);
 }
 
+//Gombok
 const rotateItemButton = document.getElementById("rotateItemButton");
 rotateItemButton.addEventListener("click", rotateClicked);
 const mirrorItemButton = document.getElementById("mirrorItemButton");
 mirrorItemButton.addEventListener("click", mirrorClicked);
 
+//Az elem orientációja alapján forgatja az elemet 90 fokban óramutató járása szerint(ha ez éppen 3 akkor lenullázza az orientációt)
 let orient = 0;
 function rotateClicked() {
   if (orient != 3) {
@@ -316,10 +311,12 @@ function rotateClicked() {
   rotateElement(orient);
 }
 
+//Megtükrözi az elemet
 function mirrorClicked() {
   mirrorElement();
 }
 
+//A jelenlegi orient alapján egy switch-case-el forgatja az elemet minden lépésnél 90 fokkal, majd frissíti az elem állását a kijelzőn
 function rotateElement(orientation) {
   switch (orientation) {
     case 1:
@@ -338,6 +335,7 @@ function rotateElement(orientation) {
   updateElement();
 }
 
+//Elforgatja 90 fokkal mátrix adattagjait egy segédmátrix használatával, majd visszamásolja az eredeti mátrixba az értékeket
 function rotate90DegreesClockwise() {
   const tempMatrix = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 
@@ -351,6 +349,7 @@ function rotate90DegreesClockwise() {
 
 }
 
+//Kitörli a következő elemnek az összes tartalmát, majd azt feltölti az új elemmel és kiírja az új elem lerakásának idejét
 function updateElement() {
   nextItemContainer.innerHTML = "";
   for (let i = 0; i < 3; i++) {
@@ -360,7 +359,6 @@ function updateElement() {
     for (let j = 0; j < 3; j++) {
       const previewItem = document.createElement('div');
       previewItem.className = nextItemArray[i][j].className;
-      previewItem.innerHTML = nextItemArray[i][j].innerHTML;
       Row.appendChild(previewItem);
     }
     nextItemArray.push(Array.from(Row.children));
@@ -368,6 +366,7 @@ function updateElement() {
   timeCounterDraw();
 }
 
+//Megtükrözi az elemet soronként 
 function mirrorElement() {
   for (let i = 0; i < 3; i++) {
     let curRow = nextItemArray[i];
@@ -380,12 +379,13 @@ function mirrorElement() {
   updateElement();
 }
 
-
+//A teljes játékállást frissíti
 function update() {
   updateMap();
   updateElements();
 }
 
+//Kirajzolja a térképet, létrehozza a mátrixos megvalósítását, majd az összes cellához hozzáadja az eventeket
 function updateMap() {
   drawMap();
   convertToMatrix();
@@ -396,15 +396,18 @@ function updateMap() {
       grid[i][j].addEventListener("mouseup", placeElementOnGrid)
     }
   }
+  //A háttérben használt gridhez hozzá adja a jelenlegi állását a gridnek
   deepCopyGrid(grid, backgroundGrid);
 }
 
+//Kitörli a legfelső elemet, majd az új legfelső elemet a következő elem helyére generálja
 function updateElements() {
   mixedElements.splice(0, 1);
   generateNextElement();
   selectNextElement();
 }
 
+//A billentyűkért felelős eventek
 document.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -428,9 +431,11 @@ document.addEventListener("keypress", function (event) {
   }
 });
 
+//Játékkezdet
 convertToMatrix();
 update();
 
+//Ellenőrzi, hogy jelenlegi helyzetében lerakható-e a következő elem
 let canPlace = true;
 function canDraw(i, j) {
   //Ellenőrzi, hogy a 3x3-mas lerakó mátrix része-e a pályának
@@ -450,9 +455,9 @@ function canDraw(i, j) {
   for (let k = i; k < i + 3; k++) {
     for (let l = j; l < j + 3; l++) {
       grid[k][l].style.border = "thick double lightgreen";
-      if (backgroundGrid[k][l].innerHTML == 1) {
+      if (backgroundGrid[k][l].className != "grid-item") {
         //Ellenőrzi, hogy a 3x3-mas területen ütközne-e a cella egy olyan cellával, amit le akarunk rakni
-        if (nextItemArray[k - i][l - j].innerHTML == 1) {
+        if (nextItemArray[k - i][l - j].className != "preview-item") {
           grid[k][l].style.border = "thick double crimson";
           canPlace = false;
           return canPlace;
@@ -464,12 +469,12 @@ function canDraw(i, j) {
   return canPlace;
 }
 
+//Ad egy előképet a lehelyezésről, csak azokat a cellákat mutálja, ahol a következő elem 3x3-mas mátrixában 1-es elem szerepel
 function previewDraw(i, j) {
   if (canDraw(i, j)) {
     for (let k = i; k < i + 3; k++) {
       for (let l = j; l < j + 3; l++) {
-        if (nextItemArray[k - i][l - j].innerHTML == 1) {
-          grid[k][l].innerHTML = nextItemArray[k - i][l - j].innerHTML;
+        if (nextItemArray[k - i][l - j].className != "preview-item") {
           grid[k][l].className = nextItemArray[k - i][l - j].className;
           grid[k][l].style.border = "thick double lightgreen";
         }
@@ -478,57 +483,86 @@ function previewDraw(i, j) {
   }
 }
 
+//Ellenőrzi, hogy a játékos mentené-e a jelenlegi állapotát a táblának(az előképet megtartaná-e)
 let save = false;
+//Ha az elem lerakható, és a játékos mentené az állást, akkor az első ág hívódik meg
 function placeElementOnGrid() {
   if (canPlace) {
+    //Reseteli a canPlace-t
     canPlace = false;
+    //Beállítja, hogy a játékos menteni szeretne
     save = true;
+    //Kivonja egyesével a napokat a maradék napokból, majd meghívja a szezonokat ellenőrző függvényt
     for (let i = 0; i < mixedElements[0].time; i++) {
       timeLeft--;
       updateSeasons()
     }
+    //Frissíti a következő elem helyén lévő 3x3-mas mátrixot
     updateElements();
   } else {
+    //Figyelmezteti a játékost, hogy illegális a lépése
     alert("can't place")
   }
 }
 
+//Ha a játékos kimozgatja az egeret a jelenlegi cellából, és már jelezte, hogy mentene akkor meghívódik az if statement
 function checkForSaving() {
   if (save) {
+    //Reseteli a háttér gridet
     backgroundGrid = [];
+    //Átmásolja a front-end gridet a háttér grid-be
     deepCopyGrid(grid, backgroundGrid);
+    //Visszaállítja a save-t
     save = false;
+    //Kilép
     return;
   }
+  //Ha a játékos nem mentene, akkor a front-end-be visszamenti a backenden eltárolt gridet, ami az előző állást tárolja
   grid = [];
   deepCopyGrid(backgroundGrid, grid);
+  //Vissza rajzolja az előző gridet
   updateMap();
 }
 
 let timeLeft = 28;
 const seasonTimeLeft = document.getElementById("seasonTimeLeft");
 
+//Az összes szezont reprezentáló div-nek egy kollekciója
 const seasons = Array.from(document.getElementById("seasons").children);
+//Az első szezonnak beállítja a 0. elemet
 let currentSeason = seasons[0];
-const curentSeasonText = document.getElementById("currentSeason");
-curentSeasonText.innerHTML = seasons[0].innerHTML;
-seasonTimeLeft.innerHTML = "Time left of this season: 7";
-function updateSeasons() {
 
+const curentSeasonText = document.getElementById("currentSeason");
+
+//Az első szezonnak beállítja a nevét és a hátralévő időt
+curentSeasonText.innerHTML = seasons[0].id;
+seasonTimeLeft.innerHTML = "Time left of this season: 7";
+
+//Frissíti a szezonokat
+function updateSeasons() {
+  //Ha a hátralévő idő 7-el osztható, akkor a következő szezonra ugrik a currentSeason
   if (timeLeft % 7 == 0) {
     seasons.splice(0, 1);
     currentSeason = seasons[0];
   }
+  //Ha 0-val egyenlő vagy kisebb a hátralévő idő akkor a játék véget ér
   if (timeLeft <= 0) {
     console.log("Game Over!") //TODO: Implement game over
   }
-  curentSeasonText.innerHTML = seasons[0].innerHTML;
+  //Frissíti a jelenlegi szezont
+  curentSeasonText.innerHTML = seasons[0].id;
+
+  //A szezonból hátralévő napokat tárolja
   let daysLeft = timeLeft % 7;
+  //Ha ez egyenlő 0-val, azaz szezont váltunk, akkor reseteli 7-re
   if (timeLeft % 7 == 0) {
     daysLeft += 7;
   }
   seasonTimeLeft.innerHTML = "Time left of this season:" + daysLeft;
 }
+
+//TODO: Challange implementation
+//TODO: MediaQuery for the tiles
 
 //Utils
 function copyMatrix(source, destination) {
@@ -545,7 +579,6 @@ function deepCopyGrid(source, destination) {
     Row.className = 'row';
     for (let j = 0; j < 11; j++) {
       const Cell = document.createElement('div');
-      Cell.innerHTML = source[i][j].innerHTML;
       Cell.className = source[i][j].className;
       Row.append(Cell);
     }
