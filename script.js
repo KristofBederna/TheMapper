@@ -248,10 +248,13 @@ const elements = [
 
 //Elemek randomizálása
 let mixedElements = [];
-for (const element of elements) {
-  mixedElements.push(element);
+function randomizeElements() {
+  mixedElements = [];
+  for (const element of elements) {
+    mixedElements.push(element);
+  }
+  mixedElements.sort(() => Math.random() - 0.5);
 }
-mixedElements.sort(() => Math.random() - 0.5);
 
 //A következő elem feltöltése 0-val
 let nextItemContainer = document.querySelector("#nextItemContainer");
@@ -432,6 +435,7 @@ document.addEventListener("keypress", function (event) {
 });
 
 //Játékkezdet
+randomizeElements();
 convertToMatrix();
 update();
 
@@ -443,7 +447,7 @@ function canDraw(i, j) {
     for (let k = i; k < i + 3; k++) {
       for (let l = j; l < j + 3; l++) {
         try {
-          grid[k][l].style.border = "thick double crimson"; 
+          grid[k][l].style.border = "dashed crimson"; 
         } catch (error) {}
       }
     }
@@ -454,11 +458,11 @@ function canDraw(i, j) {
   //Ellenőrzi, hogy a 3x3-mas terület, ahová le akarjuk rakni, már tartalmaz-e olyan cellát, amiben van elem
   for (let k = i; k < i + 3; k++) {
     for (let l = j; l < j + 3; l++) {
-      grid[k][l].style.border = "thick double lightgreen";
+      grid[k][l].style.border = "dashed lightgreen";
       if (backgroundGrid[k][l].className != "grid-item") {
         //Ellenőrzi, hogy a 3x3-mas területen ütközne-e a cella egy olyan cellával, amit le akarunk rakni
         if (nextItemArray[k - i][l - j].className != "preview-item") {
-          grid[k][l].style.border = "thick double crimson";
+          grid[k][l].style.border = "dashed crimson";
           canPlace = false;
           return canPlace;
         }
@@ -476,7 +480,7 @@ function previewDraw(i, j) {
       for (let l = j; l < j + 3; l++) {
         if (nextItemArray[k - i][l - j].className != "preview-item") {
           grid[k][l].className = nextItemArray[k - i][l - j].className;
-          grid[k][l].style.border = "thick double lightgreen";
+          grid[k][l].style.border = "dashed lightgreen";
         }
       }
     }
@@ -540,10 +544,23 @@ seasonTimeLeft.innerHTML = "Time left of this season: 7";
 
 //Frissíti a szezonokat
 function updateSeasons() {
+    //A szezonból hátralévő napokat tárolja
+    let daysLeft = timeLeft % 7;
+  //Ha a hátralévő idő 1 nap és 2 napos kártyát húzunk, akkor a szezonnak vége
+  if (timeLeft % 7 == 1) {
+    if (mixedElements[0].time > 1) {
+      seasons.splice(0, 1);
+      currentSeason = seasons[0];
+      randomizeElements();
+      daysLeft += 6;
+      timeLeft--;
+    }
+  }
   //Ha a hátralévő idő 7-el osztható, akkor a következő szezonra ugrik a currentSeason
-  if (timeLeft % 7 == 0) {
+  else if (timeLeft % 7 == 0) {
     seasons.splice(0, 1);
     currentSeason = seasons[0];
+    randomizeElements();
   }
   //Ha 0-val egyenlő vagy kisebb a hátralévő idő akkor a játék véget ér
   if (timeLeft <= 0) {
@@ -552,8 +569,6 @@ function updateSeasons() {
   //Frissíti a jelenlegi szezont
   curentSeasonText.innerHTML = seasons[0].id;
 
-  //A szezonból hátralévő napokat tárolja
-  let daysLeft = timeLeft % 7;
   //Ha ez egyenlő 0-val, azaz szezont váltunk, akkor reseteli 7-re
   if (timeLeft % 7 == 0) {
     daysLeft += 7;
@@ -562,6 +577,7 @@ function updateSeasons() {
 }
 
 //TODO: Challange implementation
+//TODO: Season change if card's time is over the time left
 //TODO: MediaQuery for the tiles
 
 //Utils
