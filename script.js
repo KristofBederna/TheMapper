@@ -1,3 +1,5 @@
+let gameOver = false;
+
 //A pálya kirajzolása
 
 //Hegyek elhelyezése
@@ -442,6 +444,10 @@ update();
 //Ellenőrzi, hogy jelenlegi helyzetében lerakható-e a következő elem
 let canPlace = true;
 function canDraw(i, j) {
+  //Ha vége a játéknak, már nem lehet rakni
+  if (gameOver) {
+    return false;
+  }
   //Ellenőrzi, hogy a 3x3-mas lerakó mátrix része-e a pályának
   if (i + 3 > 11 || j + 3 > 11) {
     for (let k = i; k < i + 3; k++) {
@@ -540,31 +546,32 @@ const curentSeasonText = document.getElementById("currentSeason");
 
 //Az első szezonnak beállítja a nevét és a hátralévő időt
 curentSeasonText.innerHTML = seasons[0].id;
+currentSeason.style.border = "double thick lightgreen";
 seasonTimeLeft.innerHTML = "Time left of this season: 7";
 
 //Frissíti a szezonokat
 function updateSeasons() {
-    //A szezonból hátralévő napokat tárolja
-    let daysLeft = timeLeft % 7;
-  //Ha a hátralévő idő 1 nap és 2 napos kártyát húzunk, akkor a szezonnak vége
-  if (timeLeft % 7 == 1) {
-    if (mixedElements[0].time > 1) {
-      seasons.splice(0, 1);
-      currentSeason = seasons[0];
-      randomizeElements();
-      daysLeft += 6;
-      timeLeft--;
-    }
-  }
+  //A szezonból hátralévő napokat tárolja
+  let daysLeft = timeLeft % 7;
+
+  //TODO: Implement: if season has less than 2 days left and you draw a 2 day card your season ends
+
   //Ha a hátralévő idő 7-el osztható, akkor a következő szezonra ugrik a currentSeason
-  else if (timeLeft % 7 == 0) {
+  if (timeLeft % 7 == 0) {
     seasons.splice(0, 1);
+    currentSeason.style.border = "";     
+    //Ha 0-val egyenlő vagy kisebb a hátralévő idő akkor a játék véget ér
+    if (timeLeft <= 0) {
+     gameOver = true;
+     curentSeasonText.innerHTML = "GAME OVER!";
+     seasonTimeLeft.innerHTML = "";
+     document.getElementById("placement").innerHTML = "";
+     console.log("Game Over!") //TODO: Implement game over
+     return;
+    }
     currentSeason = seasons[0];
+    currentSeason.style.border = "double thick lightgreen";
     randomizeElements();
-  }
-  //Ha 0-val egyenlő vagy kisebb a hátralévő idő akkor a játék véget ér
-  if (timeLeft <= 0) {
-    console.log("Game Over!") //TODO: Implement game over
   }
   //Frissíti a jelenlegi szezont
   curentSeasonText.innerHTML = seasons[0].id;
