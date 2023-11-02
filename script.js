@@ -453,8 +453,8 @@ function canDraw(i, j) {
     for (let k = i; k < i + 3; k++) {
       for (let l = j; l < j + 3; l++) {
         try {
-          grid[k][l].style.border = "dashed crimson"; 
-        } catch (error) {}
+          grid[k][l].style.border = "dashed crimson";
+        } catch (error) { }
       }
     }
     canPlace = false;
@@ -559,15 +559,15 @@ function updateSeasons() {
   //Ha a hátralévő idő 7-el osztható, akkor a következő szezonra ugrik a currentSeason
   if (timeLeft % 7 == 0) {
     seasons.splice(0, 1);
-    currentSeason.style.border = "";     
+    currentSeason.style.border = "";
     //Ha 0-val egyenlő vagy kisebb a hátralévő idő akkor a játék véget ér
     if (timeLeft <= 0) {
-     gameOver = true;
-     curentSeasonText.innerHTML = "GAME OVER!";
-     seasonTimeLeft.innerHTML = "";
-     document.getElementById("placement").innerHTML = "";
-     console.log("Game Over!") //TODO: Implement game over
-     return;
+      gameOver = true;
+      curentSeasonText.innerHTML = "GAME OVER!";
+      seasonTimeLeft.innerHTML = "";
+      document.getElementById("placement").innerHTML = "";
+      console.log("Game Over!") //TODO: Implement game over
+      return;
     }
     currentSeason = seasons[0];
     currentSeason.style.border = "double thick lightgreen";
@@ -583,9 +583,311 @@ function updateSeasons() {
   seasonTimeLeft.innerHTML = "Time left of this season:" + daysLeft;
 }
 
-//TODO: Challange implementation
-//TODO: Season change if card's time is over the time left
+//TODO: Solution for no moves left
+//TODO: Link together the challenges and the front end
+//TODO: Can place blocks anywhere
+//TODO: Saving
 //TODO: MediaQuery for the tiles
+
+//Challanges
+let total = 0;
+
+class Challenge {
+  constructor(img, point, isActive, name, description) {
+    this.img = img;
+    this.point = point;
+    this.isActive = isActive;
+    this.name = name;
+    this.description = description;
+  }
+}
+
+const challenges = [];
+const borderlands = new Challenge("img/missions_eng/Borderlands.png", 6, false, "Borderlands", "For each full row or column you get six points.");
+const edgeOfTheForest = new Challenge("img/missions_eng/EdgeOfTheForest.png", 1, false, "Edge of the forest", "You get one point for each forest field adjacent to the edge of the map.");
+const emptySite = new Challenge("img/missions_eng/EmptySite.png", 2, false, "Empty site", "You get two points for empty fields adjacent to your village fields.");
+const magiciansValley = new Challenge("img/missions_eng/MagiciansValley.png", 3, false, "Magicians' valley", "You get tgree points for each of your water fields adjacent to your mountain fields.");
+const oddNumberedSilos = new Challenge("img/missions_eng/OddNumberedSilos.png", 10, false, "Odd numbered silos", "For each of your odd numbered full columns you get 10 points.");
+const richCountryside = new Challenge("img/missions_eng/RichCountryside.png", 4, false, "Rich countryside", "For each row with at least five different terrain types, you will recieve four points.");
+const rowOfHouses = new Challenge("img/missions_eng/RowOfHouses.png", 2, false, "Row of houses", "For each field in the longest village fields that are horizontally uninterrupted and contiguous you will get two points.");
+const sleepyValley = new Challenge("img/missions_eng/SleepyValley.png", 4, false, "Sleepy valley", "For every row with three forest fields, you get four points.");
+const treeLine = new Challenge("img/missions_eng/TreeLine.png", 2, false, "Tree line", "You get two points for each of the fields in the longest vertically uninterrupted continuous forest. If there are two or more tree lines with the same longest length, only one counts.");
+const wateringCanal = new Challenge("img/missions_eng/WateringCanal.png", 4, false, "Watering canal", "For each column of your map that has the same number of farm and water fields, you will recieve four points. You must have at least one field of both terrain types in your column to score points.");
+const wateringPotatoes = new Challenge("img/missions_eng/WateringPotatoes.png", 2, false, "Watering potatoes", "You get two points for each water field adjacent to your farm fields.");
+const wealthyTown = new Challenge("img/missions_eng/WealthyTown.png", 3, false, "Wealthy town", "You get three points for each of your village fields adjacent to at least three different terrain types.");
+
+challenges.push(borderlands, edgeOfTheForest, emptySite, magiciansValley, oddNumberedSilos, richCountryside, rowOfHouses, sleepyValley, treeLine, wateringCanal, wateringPotatoes, wealthyTown);
+
+const challengeImages = Array.from(document.getElementsByClassName('challengeImages'));
+const challengeNames = Array.from(document.getElementsByClassName('challengeNames'));
+const challengeDescriptions = Array.from(document.getElementsByClassName('challengeDescriptions'));
+
+function randomizeChallenges() {
+  challenges.sort(() => Math.random() - 0.5);
+}
+
+function selectChallenges() {
+  randomizeChallenges();
+  for (let i = 0; i < 4; i++) {
+    challengeImages[i].style.backgroundImage = `url('${challenges[i].img}')`;
+    challengeNames[i].innerHTML = challenges[i].name;
+    challengeDescriptions[i].innerHTML = challenges[i].description;
+  }
+}
+
+selectChallenges();
+
+function edgeOfTheForestCalculation() {
+  let points = 0;
+  for (let i = 1; i < 11; i++) {
+    if (grid[0][i - 1].className == "forestTile") {
+      points++;
+    }
+    if (grid[i - 1][10].className == "forestTile") {
+      points++;
+    }
+    if (grid[i][0].className == "forestTile") {
+      points++;
+    }
+  }
+  for (let i = 1; i < 11; i++) {
+    if (grid[10][i].className == "forestTile") {
+      points++;
+    }
+  }
+  return points;
+}
+
+function sleepyValleyCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    let forests = 0;
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "forestTile") {
+        forests++;
+      }
+    }
+    if (forests >= 3) {
+      points += 4;
+    }
+    forests = 0;
+  }
+  return points;
+}
+
+function wateringPotatoesCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "farmTile") {
+        if (i > 0 && grid[i - 1][j].className == "waterTile") {
+          points += 2;
+        }
+        if (i < 10 && grid[i + 1][j].className == "waterTile") {
+          points += 2;
+        }
+        if (j > 0 && grid[i][j - 1].className == "waterTile") {
+          points += 2;
+        }
+        if (j < 10 && grid[i][j + 1].className == "waterTile") {
+          points += 2;
+        }
+      }
+    }
+  }
+  return points;
+}
+
+function borderlandsCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    let isRowFull = true;
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "grid-item") {
+        isRowFull = false;
+        break;
+      }
+    }
+    if (isRowFull) {
+      points += 6;
+    }
+  }
+  return points;
+}
+
+function treeLineCalculation() {
+  let points = 0;
+  let curMax = 0;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (grid[j][i].className != "forestTile") {
+        if (points > curMax) {
+          curMax = points;
+        }
+        points = 0;
+      }
+      if (grid[j][i].className == "forestTile") {
+        points += 2;
+      }
+    }
+  }
+  return curMax;
+}
+
+function wealthyTownCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    let threshold = [];
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "townTile") {
+        if (i > 0) {
+          threshold.push(grid[i - 1][j].className);
+        }
+        if (i < 10) {
+          threshold.push(grid[i + 1][j].className);
+        }
+        if (j > 0) {
+          threshold.push(grid[i][j - 1].className);
+        }
+        if (j < 10) {
+          threshold.push(grid[i][j + 1].className);
+        }
+      }
+      threshold = threshold.filter((item) => item != "grid-item");
+      let uniques = new Set(threshold);
+      console.log(uniques);
+      if (uniques.size >= 3) {
+        points += 3;
+      }
+      threshold = [];
+    }
+  }
+  return points;
+}
+
+function wateringCanalCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    let balance = 0;
+    let valid = false;
+    for (let j = 0; j < 11; j++) {
+      if (grid[j][i].className == "farmTile") {
+        balance++;
+        valid = true;
+      }
+      if (grid[j][i].className == "waterTile") {
+        balance--;
+        valid = true;
+      }
+    }
+    if (balance == 0 && valid) {
+      points += 4;
+    }
+  }
+  return points;
+}
+
+function magiciansValleyCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "mountainTile") {
+        if (i > 0 && grid[i - 1][j].className == "waterTile") {
+          points += 3;
+        }
+        if (i < 10 && grid[i + 1][j].className == "waterTile") {
+          points += 3;
+        }
+        if (j > 0 && grid[i][j - 1].className == "waterTile") {
+          points += 3;
+        }
+        if (j < 10 && grid[i][j + 1].className == "waterTile") {
+          points += 3;
+        }
+      }
+    }
+  }
+  return points;
+}
+
+function emptySiteCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "townTile") {
+        if (i > 0 && grid[i - 1][j].className == "grid-item") {
+          points += 2;
+        }
+        if (i < 10 && grid[i + 1][j].className == "grid-item") {
+          points += 2;
+        }
+        if (j > 0 && grid[i][j - 1].className == "grid-item") {
+          points += 2;
+        }
+        if (j < 10 && grid[i][j + 1].className == "grid-item") {
+          points += 2;
+        }
+      }
+    }
+  }
+  return points;
+}
+
+function rowOfHousesCalculation() {
+  let points = 0;
+  let curMax = 0;
+  let instances = 0;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className != "townTile") {
+        if (points == curMax && points != 0) {
+          instances++;
+        }
+        if (points > curMax) {
+          curMax = points;
+          instances = 1;
+        }
+        points = 0;
+      }
+      if (grid[i][j].className == "townTile") {
+        points += 2;
+      }
+    }
+  }
+  return curMax * instances;
+}
+
+function oddNumberedSilosCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i += 2) {
+    let isColumnFull = true;
+    for (let j = 0; j < 11; j++) {
+      if (grid[j][i].className == "grid-item") {
+        isColumnFull = false;
+        break;
+      }
+    }
+    if (isColumnFull) {
+      points += 10;
+    }
+  }
+  return points;
+}
+
+function richCountrysideCalculation() {
+  let points = 0;
+  for (let i = 0; i < 11; i++) {
+    let row = [];
+    for (let j = 0; j < 11; j++) {
+      row.push(grid[i][j].className);
+    }
+    let uniques = new Set(row.filter(item => item != "grid-item"));
+    if (uniques.size == 5) {
+      points += 4;
+    }
+  }
+  return points;
+}
 
 //Utils
 function copyMatrix(source, destination) {

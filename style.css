@@ -8,11 +8,11 @@
 }
 
 * {
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-html {
-  background-image:url(img/background.png);
+body {
+  background-image: url(img/background.png);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -31,6 +31,7 @@ button {
   z-index: 1;
   margin: 5px;
 }
+
 button:after {
   content: "";
   position: absolute;
@@ -42,6 +43,7 @@ button:after {
   border-radius: 10rem;
   z-index: -2;
 }
+
 button:before {
   content: "";
   position: absolute;
@@ -54,9 +56,11 @@ button:before {
   border-radius: 10rem;
   z-index: -1;
 }
+
 button:hover {
   color: #fff;
 }
+
 button:hover:before {
   width: 100%;
 }
@@ -67,8 +71,8 @@ button:hover:before {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, 33.3%);
-    grid-template-rows: repeat(2, 33.3%);
-    gap: 10px;
+    grid-template-rows: repeat(3, 25%);
+    gap: 25px;
   }
 
   #map {
@@ -107,7 +111,7 @@ button:hover:before {
     background-color: #ffc2ee;
     width: 15%;
     background-image: url(./img/cherryBlossom.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position-y: 0.3rem;
     border-radius: 15%;
@@ -119,7 +123,7 @@ button:hover:before {
     background-color: rgb(255, 252, 168);
     width: 15%;
     background-image: url(./img/sun.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     border-radius: 15%;
   }
@@ -130,7 +134,7 @@ button:hover:before {
     background-color: #ba7900;
     width: 15%;
     background-image: url(./img/pumpkin.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     border-radius: 15%;
   }
@@ -141,7 +145,7 @@ button:hover:before {
     background-color: #004a74;
     width: 15%;
     background-image: url(./img/snowflake.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position-y: -0.1rem;
     background-position-x: 0.1rem;
@@ -156,25 +160,90 @@ button:hover:before {
     justify-content: space-evenly;
   }
 
-  #challanges {
+  #challenges {
     grid-area: 3 / 2 / 3 / 2;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(2, 120px);
+    row-gap: 10px;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
   }
 
-  .challange {
+  #challenge1 {
+    width: 80%;
+    aspect-ratio: 3;
+    grid-area: 1 / 1 / 1 / 1;
     border: 4px solid #000000;
-    background-color: #555555;
-    width: 15%;
-    aspect-ratio: 1;
+    background-color: #363636;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(3, 33.3%);
   }
+
+  #challenge2 {
+
+    width: 80%;
+    aspect-ratio: 3;
+    grid-area: 1 / 2 / 1 / 2;
+    border: 4px solid #000000;
+    background-color: #363636;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(3, 33.3%);
+  }
+
+  #challenge3 {
+
+    width: 80%;
+    aspect-ratio: 3;
+    grid-area: 2 / 1 / 2 / 1;
+    border: 4px solid #000000;
+    background-color: #363636;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(3, 33.3%);
+  }
+
+  #challenge4 {
+
+    width: 80%;
+    aspect-ratio: 3;
+    grid-area: 2 / 2 / 2 / 2;
+    border: 4px solid #000000;
+    background-color: #363636;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(3, 33.3%);
+  }
+
+  .challengeImages {
+    background-repeat: no-repeat;
+    background-size: contain;
+    grid-area: 1/1/4/1;
+    justify-content: center;
+  }
+
+  .challengeNames {
+    grid-area: 1/2/1/2;
+    font-size: 13px;
+  }
+
+  .challengeDescriptions {
+    font-size: 7px;
+    grid-area: 2/2/2/2;
+  }
+
 
   #placement {
-    grid-area: 3 / 3 / 3 / 3;
+    grid-area: 4 / 3 / 4 / 3;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 33.3%);
+    grid-template-rows: repeat(3, 25%);
   }
 
   #placement h1 {
@@ -214,7 +283,7 @@ button:hover:before {
   .mountainTile {
     background-color: gray;
     background-image: url(./img/mountains.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     aspect-ratio: 1;
     border: 1px solid #000;
@@ -226,7 +295,7 @@ button:hover:before {
   .forestTile {
     background-color: rgb(147, 255, 147);
     background-image: url(./img/forest.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     aspect-ratio: 1;
     border: 1px solid #000;
@@ -238,7 +307,7 @@ button:hover:before {
   .townTile {
     background-color: brown;
     background-image: url(./img/village.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     aspect-ratio: 1;
     border: 1px solid #000;
@@ -251,7 +320,7 @@ button:hover:before {
     background-color: rgb(255, 228, 74);
     background-image: url(./img/potato.svg);
     background-repeat: no-repeat;
-    background-size:cover;
+    background-size: cover;
     aspect-ratio: 1;
     border: 1px solid #000;
     color: black;
@@ -262,7 +331,7 @@ button:hover:before {
   .waterTile {
     background-color: lightblue;
     background-image: url(./img/water.svg);
-    background-size:cover;
+    background-size: cover;
     background-repeat: no-repeat;
     aspect-ratio: 1;
     border: 1px solid #000;
@@ -328,6 +397,7 @@ button:hover:before {
   .waterTile {
     width: var(--grid-size-450px-880px);
   }
+
   #placement #nextItemContainer .row {
     display: grid;
     grid-template-columns: repeat(3, var(--grid-size-450px-880px));
@@ -390,6 +460,7 @@ button:hover:before {
   .waterTile {
     width: var(--grid-size-650px-1130px);
   }
+
   #placement #nextItemContainer .row {
     display: grid;
     grid-template-columns: repeat(3, var(--grid-size-650px-1130px));
@@ -399,11 +470,11 @@ button:hover:before {
 @media screen and (min-width: 1024px) {
   #container {
     grid-template-columns: repeat(1, 50%);
-    grid-template-rows: repeat(3, 33.3%);
+    grid-template-rows: repeat(4, 25%);
   }
 
   #map {
-    grid-area: 1 / 1 / 4 / 2;
+    grid-area: 1 / 1 / 5 / 2;
   }
 
   .grid-container {
@@ -427,7 +498,7 @@ button:hover:before {
   }
 
   #placement {
-    grid-area: 3 / 2 / 4 / 3;
+    grid-area: 4 / 2 / 5 / 3;
   }
 
   #Spring {
@@ -473,6 +544,7 @@ button:hover:before {
   .waterTile {
     width: var(--grid-size-1024px);
   }
+
   #placement #nextItemContainer .row {
     display: grid;
     grid-template-columns: repeat(3, var(--grid-size-1024px));
@@ -535,6 +607,7 @@ button:hover:before {
   .waterTile {
     width: var(--grid-size-650px-1130px);
   }
+
   #placement #nextItemContainer .row {
     display: grid;
     grid-template-columns: repeat(3, var(--grid-size-650px-1130px));
@@ -577,6 +650,7 @@ button:hover:before {
   .waterTile {
     width: var(--grid-size-1250px);
   }
+
   #placement #nextItemContainer .row {
     display: grid;
     grid-template-columns: repeat(3, var(--grid-size-1250px));
@@ -619,6 +693,7 @@ button:hover:before {
   .waterTile {
     width: var(--grid-size-1500px);
   }
+
   #placement #nextItemContainer .row {
     display: grid;
     grid-template-columns: repeat(3, var(--grid-size-1500px));
