@@ -9,54 +9,66 @@
 </head>
 
 <body>
-  <div id="container">
-    <div id="map">
-      <div class="grid-container"></div>
-    </div>
-    <div id="seasons">
-      <div id="Spring">
+  <div id="background">
+    <div id="container">
+      <div id="map">
+        <p id="title">The Mapper</p>
+        <div class="grid-container"></div>
       </div>
-      <div id="Summer">
-      </div>
-      <div id="Fall">
-      </div>
-      <div id="Winter">
-      </div>
-    </div>
-    <div id="challangesContainer">
-      <p id="currentSeason"></p>
-      <div id="challenges">
-        <div id="challenge1">
-          <div class="challengeImages"></div>
-          <div class="challengeNames"></div>
-          <div class="challengeDescriptions"></div>
+      <div id="seasons">
+        <div id="Spring">
         </div>
-        <div id="challenge2">
-          <div class="challengeImages"></div>
-          <div class="challengeNames"></div>
-          <div class="challengeDescriptions"></div>
+        <div id="SpringPoints">1</div>
+        <div id="Summer">
         </div>
-        <div id="challenge3">
-          <div class="challengeImages"></div>
-          <div class="challengeNames"></div>
-          <div class="challengeDescriptions"></div>
+        <div id="SummerPoints">1</div>
+        <div id="Fall">
         </div>
-        <div id="challenge4">
-          <div class="challengeImages"></div>
-          <div class="challengeNames"></div>
-          <div class="challengeDescriptions"></div>
+        <div id="FallPoints">1</div>
+        <div id="Winter">
+        </div>
+        <div id="WinterPoints">1</div>
+        <p id="currentSeason"></p>
+      </div>
+      <div id="challengesContainer">
+        <div id="challenges">
+          <div id="challenge1">
+            <div class="challengeImages"></div>
+            <div class="challengeNames"></div>
+            <div class="challengeDescriptions"></div>
+            <div class="point">1</div>
+          </div>
+          <div id="challenge2">
+            <div class="challengeImages"></div>
+            <div class="challengeNames"></div>
+            <div class="challengeDescriptions"></div>
+            <div class="point">1</div>
+          </div>
+          <div id="challenge3">
+            <div class="challengeImages"></div>
+            <div class="challengeNames"></div>
+            <div class="challengeDescriptions"></div>
+            <div class="point">1</div>
+          </div>
+          <div id="challenge4">
+            <div class="challengeImages"></div>
+            <div class="challengeNames"></div>
+            <div class="challengeDescriptions"></div>
+            <div class="point">1</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="placement">
-      <div id="placementButtons">
-        <p id="seasonTimeLeft"></p>
-        <h1>Next item:</h1>
-        <button id="rotateItemButton">ROTATE(R)</button>
-        <button id="mirrorItemButton">MIRROR(M)</button>
-      </div>
-      <div id="placementPreview">
-        <div id="nextItemContainer"></div>
+      <div id="placement">
+        <div id="placementButtons">
+          <p id="seasonTimeLeft"></p>
+          <p id="nextItemTag">Next item:</p>
+          <button id="rotateItemButton">ROTATE(R)</button>
+          <button id="mirrorItemButton">MIRROR(M)</button>
+        </div>
+        <div id="placementPreview">
+          <div id="nextItemContainer"></div>
+          <div id="timeToPlace"></div>
+        </div>
       </div>
     </div>
 </body>

@@ -588,6 +588,7 @@ function updateSeasons() {
 //TODO: Can place blocks anywhere
 //TODO: Saving
 //TODO: MediaQuery for the tiles
+//TODO: Seasons outlines being passed to the points due to "children" element
 
 //Challanges
 let total = 0;

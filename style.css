@@ -1,14 +1,14 @@
 :root {
   --grid-size-350px: 30px;
   --grid-size-450px-880px: 38px;
-  --grid-size-1024px: 44px;
+  --grid-size-1024px: 40px;
   --grid-size-650px-1130px: 45px;
   --grid-size-1250px: 50px;
-  --grid-size-1500px: 65px;
+  --grid-size-1650px: 65px;
 }
 
 * {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -17,538 +17,451 @@ body {
   background-size: cover;
 }
 
-button {
-  display: inline-block;
-  padding: 0.75rem 1.25rem;
-  border-radius: 10rem;
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 1rem;
-  letter-spacing: 0.15rem;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  margin: 5px;
+#background {
+  background-color: rgba(105, 105, 105, 0.384);
+  height: 100vh;
 }
 
-button:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+#container {
   height: 100%;
-  background-color: rgb(87, 87, 87);
-  border-radius: 10rem;
-  z-index: -2;
+  display: grid;
+  grid-template-columns: 15% 15% 15% 15% 15% 15%;
+  grid-template-rows: 32% 32% 32%;
+  gap: 1% 0.1%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "map map map seasons seasons seasons"
+    "map map map challengesContainer challengesContainer challengesContainer"
+    "map map map placement placement placement";
 }
 
-button:before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0%;
+#map {
+  grid-area: map;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 10% 90%;
+  gap: 1% 0%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "title"
+    "grid-container";
+}
+
+#title {
+  grid-area: title;
+  font-size: 5vh;
+  display: grid;
+  align-items: center;
+  padding-left: 25%;
+}
+
+.grid-container {
+  grid-area: grid-container;
+  grid-template-rows: repeat(11, var(--grid-size-1024px));
+  display: grid;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  flex-direction: column;
   height: 100%;
-  background-color: #ffd190;
-  transition: all 0.3s;
-  border-radius: 10rem;
-  z-index: -1;
 }
 
-button:hover {
-  color: #fff;
+.row {
+  display: grid;
+  grid-template-columns: repeat(11, var(--grid-size-1024px));
 }
 
-button:hover:before {
+.grid-item {
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
+  background-color: rgb(255, 218, 169);
+}
+
+#seasons {
+  grid-area: seasons;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-rows: 50% 25% 25%;
+  gap: 0% 0%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  grid-template-areas:
+    "Spring Summer Fall Winter"
+    "SpringPoints SummerPoints FallPoints WinterPoints"
+    "currentSeason currentSeason currentSeason currentSeason";
+}
+
+#Spring {
+  grid-area: Spring;
+  aspect-ratio: 1;
+  border: 4px solid #a00073;
+  background-color: #ffc2ee;
+  width: 80%;
+  background-image: url(./img/cherryBlossom.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position-y: 0.3rem;
+  border-radius: 15%;
+}
+
+#SpringPoints {
+  grid-area: SpringPoints
+}
+
+#Summer {
+  grid-area: Summer;
+  aspect-ratio: 1;
+  border: 4px solid #ffff00;
+  background-color: rgb(255, 252, 168);
+  width: 80%;
+  background-image: url(./img/sun.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 15%;
+}
+
+#SummerPoints {
+  grid-area: SummerPoints
+}
+
+#Fall {
+  grid-area: Fall;
+  aspect-ratio: 1;
+  border: 4px solid #ffa600;
+  background-color: #ba7900;
+  width: 80%;
+  background-image: url(./img/pumpkin.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 15%;
+}
+
+#FallPoints {
+  grid-area: FallPoints
+}
+
+#Winter {
+  grid-area: Winter;
+  aspect-ratio: 1;
+  border: 4px solid #00a2ff;
+  background-color: #004a74;
+  width: 80%;
+  background-image: url(./img/snowflake.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position-y: -0.1rem;
+  background-position-x: 0.1rem;
+  border-radius: 15%;
+}
+
+#WinterPoints {
+  grid-area: WinterPoints
+}
+
+#currentSeason {
+  grid-area: currentSeason;
+}
+
+
+#challengesContainer {
+  grid-area: challengesContainer;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 100%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "challenges";
+}
+
+#challenges {
+  display: grid;
+  grid-template-columns: 48% 48%;
+  grid-template-rows: 48% 48%;
+  gap: 2% 2%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "challenge1 challenge2"
+    "challenge3 challenge4";
+}
+
+#challenge1 {
+  grid-area: challenge1;
+  height: 100%;
+  aspect-ratio: 3;
+  border: 2px solid #000000;
+  border-radius: 10%;
+  background-color: #363636;
+  color: white;
+  display: grid;
+  grid-template-columns: 25% 70%;
+  grid-template-rows: 13% 65% 13%;
+  gap: 2% 2%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  grid-template-areas:
+    ". name"
+    "image description"
+    ". point";
+}
+
+#challenge2 {
+  grid-area: challenge2;
+  height: 100%;
+  aspect-ratio: 3;
+  border: 2px solid #000000;
+  border-radius: 10%;
+  background-color: #363636;
+  color: white;
+  display: grid;
+  grid-template-columns: 25% 70%;
+  grid-template-rows: 13% 65% 13%;
+  gap: 2% 2%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  grid-template-areas:
+    ". name"
+    "image description"
+    ". point";
+}
+
+#challenge3 {
+  grid-area: challenge3;
+  height: 100%;
+  margin-top: 3px;
+  aspect-ratio: 3;
+  border: 2px solid #000000;
+  border-radius: 10%;
+  background-color: #363636;
+  color: white;
+  display: grid;
+  grid-template-columns: 25% 70%;
+  grid-template-rows: 13% 65% 13%;
+  gap: 2% 2%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  grid-template-areas:
+    ". name"
+    "image description"
+    ". point";
+}
+
+#challenge4 {
+  grid-area: challenge4;
+  height: 100%;
+  margin-top: 3px;
+  aspect-ratio: 3;
+  border: 2px solid #000000;
+  border-radius: 10%;
+  background-color: #363636;
+  color: white;
+  display: grid;
+  grid-template-columns: 25% 70%;
+  grid-template-rows: 13% 65% 13%;
+  gap: 2% 2%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  grid-template-areas:
+    ". name"
+    "image description"
+    ". point";
+}
+
+.point {
+  grid-area: point;
+}
+
+.challengeDescriptions {
+  grid-area: description;
+  font-size: 0.666rem;
+}
+
+.challengeNames {
+  grid-area: name;
+}
+
+.challengeImages {
+  grid-area: image;
+  background-repeat: no-repeat;
+  background-size: contain;
   width: 100%;
+  aspect-ratio: 1;
 }
 
-@media screen and (min-width: 350px) {
-  #container {
-    height: 100%;
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 33.3%);
-    grid-template-rows: repeat(3, 25%);
-    gap: 25px;
-  }
 
-  #map {
-    grid-area: 1 / 1 / 3 / 4;
-    background-color: aliceblue;
-    border-radius: 5%;
-    padding: 1rem;
-  }
-
-  .grid-container {
-    grid-template-rows: repeat(11, var(--grid-size-350px));
-    display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  .row {
-    display: grid;
-    grid-template-columns: repeat(11, var(--grid-size-350px));
-  }
-
-  .grid-item {
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-    background-color: rgb(255, 218, 169);
-  }
-
-  #Spring {
-    aspect-ratio: 1;
-    border: 4px solid #a00073;
-    background-color: #ffc2ee;
-    width: 15%;
-    background-image: url(./img/cherryBlossom.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position-y: 0.3rem;
-    border-radius: 15%;
-  }
-
-  #Summer {
-    aspect-ratio: 1;
-    border: 4px solid #ffff00;
-    background-color: rgb(255, 252, 168);
-    width: 15%;
-    background-image: url(./img/sun.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 15%;
-  }
-
-  #Fall {
-    aspect-ratio: 1;
-    border: 4px solid #ffa600;
-    background-color: #ba7900;
-    width: 15%;
-    background-image: url(./img/pumpkin.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 15%;
-  }
-
-  #Winter {
-    aspect-ratio: 1;
-    border: 4px solid #00a2ff;
-    background-color: #004a74;
-    width: 15%;
-    background-image: url(./img/snowflake.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position-y: -0.1rem;
-    background-position-x: 0.1rem;
-    border-radius: 15%;
-  }
-
-  #seasons {
-    grid-area: 3 / 1 / 3 / 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-  }
-
-  #challenges {
-    grid-area: 3 / 2 / 3 / 2;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(2, 120px);
-    row-gap: 10px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #challenge1 {
-    width: 80%;
-    aspect-ratio: 3;
-    grid-area: 1 / 1 / 1 / 1;
-    border: 4px solid #000000;
-    background-color: #363636;
-    color: white;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 33.3%);
-  }
-
-  #challenge2 {
-
-    width: 80%;
-    aspect-ratio: 3;
-    grid-area: 1 / 2 / 1 / 2;
-    border: 4px solid #000000;
-    background-color: #363636;
-    color: white;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 33.3%);
-  }
-
-  #challenge3 {
-
-    width: 80%;
-    aspect-ratio: 3;
-    grid-area: 2 / 1 / 2 / 1;
-    border: 4px solid #000000;
-    background-color: #363636;
-    color: white;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 33.3%);
-  }
-
-  #challenge4 {
-
-    width: 80%;
-    aspect-ratio: 3;
-    grid-area: 2 / 2 / 2 / 2;
-    border: 4px solid #000000;
-    background-color: #363636;
-    color: white;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 33.3%);
-  }
-
-  .challengeImages {
-    background-repeat: no-repeat;
-    background-size: contain;
-    grid-area: 1/1/4/1;
-    justify-content: center;
-  }
-
-  .challengeNames {
-    grid-area: 1/2/1/2;
-    font-size: 13px;
-  }
-
-  .challengeDescriptions {
-    font-size: 7px;
-    grid-area: 2/2/2/2;
-  }
-
-
-  #placement {
-    grid-area: 4 / 3 / 4 / 3;
-    display: grid;
-    grid-template-columns: repeat(2, 33.3%);
-    grid-template-rows: repeat(3, 25%);
-  }
-
-  #placement h1 {
-    grid-area: 1/1/1/1;
-  }
-
-  #placement #rotateItemButton {
-    grid-area: 2/1/2/1;
-  }
-
-  #placement #mirrorItemButton {
-    grid-area: 3/1/3/1;
-  }
-
-  #placement #nextItemContainer {
-    grid-area: 1/2/4/2;
-    height: 100%;
-    display: grid;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #placement #nextItemContainer .preview-item {
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    color: black;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-  }
-
-  #placement #nextItemContainer .row {
-    display: grid;
-    grid-template-columns: repeat(3, var(--grid-size-350px));
-  }
-
-  .mountainTile {
-    background-color: gray;
-    background-image: url(./img/mountains.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    color: black;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-  }
-
-  .forestTile {
-    background-color: rgb(147, 255, 147);
-    background-image: url(./img/forest.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    color: black;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-  }
-
-  .townTile {
-    background-color: brown;
-    background-image: url(./img/village.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    color: black;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-  }
-
-  .farmTile {
-    background-color: rgb(255, 228, 74);
-    background-image: url(./img/potato.svg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    color: black;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-  }
-
-  .waterTile {
-    background-color: lightblue;
-    background-image: url(./img/water.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    aspect-ratio: 1;
-    border: 1px solid #000;
-    color: black;
-    width: var(--grid-size-350px);
-    border-radius: 15%;
-  }
+#placement {
+  grid-area: placement;
+  display: grid;
+  grid-template-columns: 48% 48%;
+  grid-template-rows: 100%;
+  gap: 0% 4%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "placementButtons placementPreview";
 }
 
-@media screen and (min-width: 450px) {
-  .grid-container {
-    grid-template-rows: repeat(11, var(--grid-size-450px-880px));
-  }
-
-  .row {
-    grid-template-columns: repeat(11, var(--grid-size-450px-880px));
-  }
-
-  .grid-item {
-    width: var(--grid-size-450px-880px);
-  }
-
-  #Spring {
-    width: 30px;
-    height: 30px;
-  }
-
-  #Summer {
-    width: 30px;
-    height: 30px;
-  }
-
-  #Fall {
-    width: 30px;
-    height: 30px;
-  }
-
-  #Winter {
-    width: 30px;
-    height: 30px;
-  }
-
-  #placement #nextItemContainer .preview-item {
-    width: var(--grid-size-450px-880px);
-  }
-
-  .mountainTile {
-    width: var(--grid-size-450px-880px);
-  }
-
-  .forestTile {
-    width: var(--grid-size-450px-880px);
-  }
-
-  .townTile {
-    width: var(--grid-size-450px-880px);
-  }
-
-  .farmTile {
-    width: var(--grid-size-450px-880px);
-  }
-
-  .waterTile {
-    width: var(--grid-size-450px-880px);
-  }
-
-  #placement #nextItemContainer .row {
-    display: grid;
-    grid-template-columns: repeat(3, var(--grid-size-450px-880px));
-  }
+#placementButtons {
+  grid-area: placementButtons;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 20% 40% 40%;
+  gap: 0% 1%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "nextItemTag ."
+    ". rotateItemButton"
+    "seasonTimeLeft mirrorItemButton";
 }
 
-@media screen and (min-width: 650px) {
-  .grid-container {
-    grid-template-rows: repeat(11, var(--grid-size-650px-1130px));
-  }
-
-  .row {
-    grid-template-columns: repeat(11, var(--grid-size-650px-1130px));
-  }
-
-  .grid-item {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  #Spring {
-    width: 40px;
-    height: 40px;
-  }
-
-  #Summer {
-    width: 40px;
-    height: 40px;
-  }
-
-  #Fall {
-    width: 40px;
-    height: 40px;
-  }
-
-  #Winter {
-    width: 40px;
-    height: 40px;
-  }
-
-  #placement #nextItemContainer .preview-item {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  .mountainTile {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  .forestTile {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  .townTile {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  .farmTile {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  .waterTile {
-    width: var(--grid-size-650px-1130px);
-  }
-
-  #placement #nextItemContainer .row {
-    display: grid;
-    grid-template-columns: repeat(3, var(--grid-size-650px-1130px));
-  }
+#seasonTimeLeft {
+  grid-area: seasonTimeLeft
 }
 
-@media screen and (min-width: 1024px) {
-  #container {
-    grid-template-columns: repeat(1, 50%);
-    grid-template-rows: repeat(4, 25%);
-  }
+#nextItemTag {
+  grid-area: nextItemTag;
+}
 
-  #map {
-    grid-area: 1 / 1 / 5 / 2;
-  }
+#rotateItemButton {
+  grid-area: rotateItemButton;
+}
 
-  .grid-container {
-    grid-template-rows: repeat(11, var(--grid-size-1024px));
-  }
+#mirrorItemButton {
+  grid-area: mirrorItemButton;
+}
 
-  .row {
-    grid-template-columns: repeat(11, var(--grid-size-1024px));
-  }
+#placementPreview {
+  grid-area: placementPreview;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 90% 10%;
+  gap: 0% 1%;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  justify-items: stretch;
+  grid-template-areas:
+    "nextItemContainer"
+    "timeToPlace";
+}
 
-  .grid-item {
-    width: var(--grid-size-1024px);
-  }
+#timeToPlace {
+  grid-area: timeToPlace;
+}
 
-  #seasons {
-    grid-area: 1 / 2 / 2 / 3;
-  }
+#nextItemContainer {
+  grid-area: nextItemContainer;
+  display: grid;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+}
 
-  #challanges {
-    grid-area: 2 / 2 / 3 / 3;
-  }
+#placement #nextItemContainer .preview-item {
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  color: black;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
+}
 
-  #placement {
-    grid-area: 4 / 2 / 5 / 3;
-  }
+#placement #nextItemContainer .row {
+  display: grid;
+  grid-template-columns: repeat(3, var(--grid-size-1024px));
+}
 
-  #Spring {
-    width: 100px;
-    height: 100px;
-  }
+.mountainTile {
+  background-color: gray;
+  background-image: url(./img/mountains.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  color: black;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
+}
 
-  #Summer {
-    width: 100px;
-    height: 100px;
-  }
+.forestTile {
+  background-color: rgb(147, 255, 147);
+  background-image: url(./img/forest.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  color: black;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
+}
 
-  #Fall {
-    width: 100px;
-    height: 100px;
-  }
+.townTile {
+  background-color: brown;
+  background-image: url(./img/village.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  color: black;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
+}
 
-  #Winter {
-    width: 100px;
-    height: 100px;
-  }
+.farmTile {
+  background-color: rgb(255, 228, 74);
+  background-image: url(./img/potato.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  color: black;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
+}
 
-  #placement #nextItemContainer .preview-item {
-    width: var(--grid-size-1024px);
-  }
-
-  .mountainTile {
-    width: var(--grid-size-1024px);
-  }
-
-  .forestTile {
-    width: var(--grid-size-1024px);
-  }
-
-  .townTile {
-    width: var(--grid-size-1024px);
-  }
-
-  .farmTile {
-    width: var(--grid-size-1024px);
-  }
-
-  .waterTile {
-    width: var(--grid-size-1024px);
-  }
-
-  #placement #nextItemContainer .row {
-    display: grid;
-    grid-template-columns: repeat(3, var(--grid-size-1024px));
-  }
+.waterTile {
+  background-color: lightblue;
+  background-image: url(./img/water.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  aspect-ratio: 1;
+  border: 1px solid #000;
+  color: black;
+  width: var(--grid-size-1024px);
+  border-radius: 15%;
 }
 
 @media screen and (min-width: 1130px) {
@@ -657,45 +570,49 @@ button:hover:before {
   }
 }
 
-@media screen and (min-width: 1500px) {
+@media screen and (min-width: 1650px) {
   .grid-container {
-    grid-template-rows: repeat(11, var(--grid-size-1500px));
+    grid-template-rows: repeat(11, var(--grid-size-1650px));
   }
 
   .row {
-    grid-template-columns: repeat(11, var(--grid-size-1500px));
+    grid-template-columns: repeat(11, var(--grid-size-1650px));
   }
 
   #placement #nextItemContainer .preview-item {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   .grid-item {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   .mountainTile {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   .forestTile {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   .townTile {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   .farmTile {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   .waterTile {
-    width: var(--grid-size-1500px);
+    width: var(--grid-size-1650px);
   }
 
   #placement #nextItemContainer .row {
     display: grid;
-    grid-template-columns: repeat(3, var(--grid-size-1500px));
+    grid-template-columns: repeat(3, var(--grid-size-1650px));
+  }
+
+  .challengeDescriptions {
+    font-size: 0.85rem;
   }
 }
