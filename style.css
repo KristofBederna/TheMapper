@@ -1,8 +1,7 @@
 :root {
-  --grid-size-350px: 30px;
-  --grid-size-450px-880px: 38px;
+  --grid-size-800px: 38px;
   --grid-size-1024px: 40px;
-  --grid-size-650px-1130px: 45px;
+  --grid-size-1130px: 45px;
   --grid-size-1250px: 50px;
   --grid-size-1650px: 65px;
 }
@@ -16,6 +15,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
 
 #background {
   background-color: rgba(105, 105, 105, 0.384);
@@ -205,7 +205,7 @@ body {
   grid-area: challenge1;
   height: 100%;
   aspect-ratio: 3;
-  border: 2px solid #000000;
+  border: 3px solid #000000;
   border-radius: 10%;
   background-color: #363636;
   color: white;
@@ -228,7 +228,7 @@ body {
   grid-area: challenge2;
   height: 100%;
   aspect-ratio: 3;
-  border: 2px solid #000000;
+  border: 3px solid #000000;
   border-radius: 10%;
   background-color: #363636;
   color: white;
@@ -252,7 +252,7 @@ body {
   height: 100%;
   margin-top: 3px;
   aspect-ratio: 3;
-  border: 2px solid #000000;
+  border: 3px solid #000000;
   border-radius: 10%;
   background-color: #363636;
   color: white;
@@ -276,7 +276,7 @@ body {
   height: 100%;
   margin-top: 3px;
   aspect-ratio: 3;
-  border: 2px solid #000000;
+  border: 3px solid #000000;
   border-radius: 10%;
   background-color: #363636;
   color: white;
@@ -306,6 +306,7 @@ body {
 
 .challengeNames {
   grid-area: name;
+  font-size: 1rem;
 }
 
 .challengeImages {
@@ -341,10 +342,29 @@ body {
   justify-content: center;
   align-content: center;
   justify-items: stretch;
+  align-items: center;
   grid-template-areas:
     "nextItemTag ."
     ". rotateItemButton"
     "seasonTimeLeft mirrorItemButton";
+}
+
+#rotateItemButton,
+#mirrorItemButton {
+  background-color: #f3b35a;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin: 5px;
+  cursor: pointer;
+  height: fit-content;
+}
+
+#rotateItemButton:hover,
+#mirrorItemButton:hover {
+  background-color: #ffd190;
 }
 
 #seasonTimeLeft {
@@ -466,15 +486,15 @@ body {
 
 @media screen and (min-width: 1130px) {
   .grid-container {
-    grid-template-rows: repeat(11, var(--grid-size-650px-1130px));
+    grid-template-rows: repeat(11, var(--grid-size-1130px));
   }
 
   .row {
-    grid-template-columns: repeat(11, var(--grid-size-650px-1130px));
+    grid-template-columns: repeat(11, var(--grid-size-1130px));
   }
 
   .grid-item {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   #Spring {
@@ -498,32 +518,32 @@ body {
   }
 
   #placement #nextItemContainer .preview-item {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   .mountainTile {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   .forestTile {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   .townTile {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   .farmTile {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   .waterTile {
-    width: var(--grid-size-650px-1130px);
+    width: var(--grid-size-1130px);
   }
 
   #placement #nextItemContainer .row {
     display: grid;
-    grid-template-columns: repeat(3, var(--grid-size-650px-1130px));
+    grid-template-columns: repeat(3, var(--grid-size-1130px));
   }
 }
 

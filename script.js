@@ -1,5 +1,123 @@
 let gameOver = false;
 
+let total = 0;
+
+class Challenge {
+  constructor(img, isActive, name, description, mission) {
+    this.img = img;
+    this.isActive = isActive;
+    this.name = name;
+    this.description = description;
+    this.mission = mission;
+  }
+}
+
+const challengeImages = Array.from(document.getElementsByClassName('challengeImages'));
+const challengeNames = Array.from(document.getElementsByClassName('challengeNames'));
+const challengeDescriptions = Array.from(document.getElementsByClassName('challengeDescriptions'));
+
+const challenges = [];
+const borderlands = new Challenge("img/missions_eng/Borderlands.png", false, "Borderlands", "For each full row or column you get six points.", borderlandsCalculation);
+const edgeOfTheForest = new Challenge("img/missions_eng/EdgeOfTheForest.png", false, "Edge of the forest", "You get one point for each forest field adjacent to the edge of the map.", edgeOfTheForestCalculation);
+const emptySite = new Challenge("img/missions_eng/EmptySite.png", false, "Empty site", "You get two points for empty fields adjacent to your village fields.", emptySiteCalculation);
+const magiciansValley = new Challenge("img/missions_eng/MagiciansValley.png", false, "Magicians' valley", "You get three points for each of your water fields adjacent to your mountain fields.", magiciansValleyCalculation);
+const oddNumberedSilos = new Challenge("img/missions_eng/OddNumberedSilos.png", false, "Odd numbered silos", "For each of your odd numbered full columns you get 10 points.", oddNumberedSilosCalculation);
+const richCountryside = new Challenge("img/missions_eng/RichCountryside.png", false, "Rich countryside", "For each row with at least five different terrain types, you will recieve four points.", richCountrysideCalculation);
+const rowOfHouses = new Challenge("img/missions_eng/RowOfHouses.png", false, "Row of houses", "For each field in the longest village fields that are horizontally uninterrupted and contiguous you will get two points.", rowOfHousesCalculation);
+const sleepyValley = new Challenge("img/missions_eng/SleepyValley.png", false, "Sleepy valley", "For every row with three forest fields, you get four points.", sleepyValleyCalculation);
+const treeLine = new Challenge("img/missions_eng/TreeLine.png", false, "Tree line", "You get two points for each of the fields in the longest vertically uninterrupted continuous forest. If there are two or more tree lines with the same longest length, only one counts.", treeLineCalculation);
+const wateringCanal = new Challenge("img/missions_eng/WateringCanal.png", false, "Watering canal", "For each column of your map that has the same number of farm and water fields, you will recieve four points. You must have at least one field of both terrain types in your column to score points.", wateringCanalCalculation);
+const wateringPotatoes = new Challenge("img/missions_eng/WateringPotatoes.png", false, "Watering potatoes", "You get two points for each water field adjacent to your farm fields.", wateringPotatoesCalculation);
+const wealthyTown = new Challenge("img/missions_eng/WealthyTown.png", false, "Wealthy town", "You get three points for each of your village fields adjacent to at least three different terrain types.", wealthyTownCalculation);
+
+challenges.push(borderlands, edgeOfTheForest, emptySite, magiciansValley, oddNumberedSilos, richCountryside, rowOfHouses, sleepyValley, treeLine, wateringCanal, wateringPotatoes, wealthyTown);
+
+const challengeHolders = Array.from(document.getElementById("challenges").children);
+const pointsPerChallenge = Array.from(document.getElementsByClassName("point"));
+
+//Challanges
+function randomizeChallenges() {
+  challenges.sort(() => Math.random() - 0.5);
+}
+
+function selectChallenges() {
+  randomizeChallenges();
+  for (let i = 0; i < 4; i++) {
+    challengeImages[i].style.backgroundImage = `url('${challenges[i].img}')`;
+    challengeNames[i].innerHTML = challenges[i].name;
+    challengeDescriptions[i].innerHTML = challenges[i].description;
+  }
+}
+
+selectChallenges();
+
+function checkActive() {
+  for (let i = 0; i < 4; i++) {
+    if (challenges[i].isActive) {
+      challengeHolders[i].style.borderColor = "green"
+    }
+  }
+}
+
+function setActive(season) {
+  for (let i = 0; i < 4; i++) {
+    challengeHolders[i].style.borderColor = "black";
+    challenges[i].isActive = false;
+  }
+  switch (season) {
+    case "Spring":
+      challenges[0].isActive = true;
+      challenges[1].isActive = true;
+      break;
+    case "Summer":
+      challenges[1].isActive = true;
+      challenges[2].isActive = true;
+      break;
+    case "Fall":
+      challenges[2].isActive = true;
+      challenges[3].isActive = true;
+      break;
+    case "Winter":
+      challenges[3].isActive = true;
+      challenges[0].isActive = true;
+      break;
+  }
+  checkActive();
+}
+
+function calculatePoints() {
+  for (let i = 0; i < 4; i++) {
+    if (challenges[i].isActive) {
+      total += challenges[i].mission();
+    }
+  }
+}
+
+let pointsThisChallenge = 0;
+let pointsFromMountains = 0;
+function drawPointsPerChallenge() {
+  for (let i = 0; i < 4; i++) {
+    if (i == 0) {
+      pointsFromMountains = enclosedMountainCalculation();
+      total += pointsFromMountains;
+    }
+    if (challenges[i].isActive) {
+      pointsThisChallenge += challenges[i].mission();
+      pointsPerChallenge[i].innerHTML = parseInt(pointsPerChallenge[i].innerHTML) + pointsThisChallenge;
+      drawPointsPerSeason();
+    }
+  }
+}
+
+function drawPointsPerSeason() {
+  for (let i = 0; i < 4; i++) {
+    if (challenges[i].isActive) {
+      seasons[1].innerHTML = parseInt(seasons[1].innerHTML) + pointsThisChallenge + pointsFromMountains;
+      pointsFromMountains = 0;
+      pointsThisChallenge = 0;
+    }
+  }
+}
 //A pálya kirajzolása
 
 //Hegyek elhelyezése
@@ -504,8 +622,10 @@ function placeElementOnGrid() {
     save = true;
     //Kivonja egyesével a napokat a maradék napokból, majd meghívja a szezonokat ellenőrző függvényt
     for (let i = 0; i < mixedElements[0].time; i++) {
-      timeLeft--;
-      updateSeasons()
+      if (!gameOver) {
+        timeLeft--;
+        updateSeasons();
+      }
     }
     //Frissíti a következő elem helyén lévő 3x3-mas mátrixot
     updateElements();
@@ -530,6 +650,8 @@ function checkForSaving() {
   //Ha a játékos nem mentene, akkor a front-end-be visszamenti a backenden eltárolt gridet, ami az előző állást tárolja
   grid = [];
   deepCopyGrid(backgroundGrid, grid);
+  //Reseteli a háttér gridet
+  backgroundGrid = [];
   //Vissza rajzolja az előző gridet
   updateMap();
 }
@@ -542,101 +664,50 @@ const seasons = Array.from(document.getElementById("seasons").children);
 //Az első szezonnak beállítja a 0. elemet
 let currentSeason = seasons[0];
 
-const curentSeasonText = document.getElementById("currentSeason");
+const currentSeasonText = document.getElementById("currentSeason");
 
 //Az első szezonnak beállítja a nevét és a hátralévő időt
-curentSeasonText.innerHTML = seasons[0].id;
+currentSeasonText.innerHTML = seasons[0].id;
 currentSeason.style.border = "double thick lightgreen";
 seasonTimeLeft.innerHTML = "Time left of this season: 7";
+setActive(seasons[0].id);
 
 //Frissíti a szezonokat
 function updateSeasons() {
   //A szezonból hátralévő napokat tárolja
   let daysLeft = timeLeft % 7;
 
-  //TODO: Implement: if season has less than 2 days left and you draw a 2 day card your season ends
-
   //Ha a hátralévő idő 7-el osztható, akkor a következő szezonra ugrik a currentSeason
   if (timeLeft % 7 == 0) {
-    seasons.splice(0, 1);
+    calculatePoints();
+    drawPointsPerChallenge()
+    //Kettőt kell levágni, mivel a pontok is a seasonsbe kerülnek
+    if (seasons.length > 3) {
+      seasons.splice(0, 2);
+    }
     currentSeason.style.border = "";
     //Ha 0-val egyenlő vagy kisebb a hátralévő idő akkor a játék véget ér
-    if (timeLeft <= 0) {
+    if (timeLeft == 0) {
       gameOver = true;
-      curentSeasonText.innerHTML = "GAME OVER!";
+      currentSeasonText.innerHTML = total;
       seasonTimeLeft.innerHTML = "";
       document.getElementById("placement").innerHTML = "";
-      console.log("Game Over!") //TODO: Implement game over
+      setActive(seasons[0].id);
+      console.log("Points from challenge 'Borderlands' had it been one of the 4 challenges: " + borderlandsCalculation());
       return;
     }
     currentSeason = seasons[0];
     currentSeason.style.border = "double thick lightgreen";
     randomizeElements();
+    //Ha ez egyenlő 0-val, azaz szezont váltunk, akkor reseteli 7-re
+    daysLeft += 7;
+    setActive(seasons[0].id);
   }
   //Frissíti a jelenlegi szezont
-  curentSeasonText.innerHTML = seasons[0].id;
+  currentSeasonText.innerHTML = seasons[0].id;
 
-  //Ha ez egyenlő 0-val, azaz szezont váltunk, akkor reseteli 7-re
-  if (timeLeft % 7 == 0) {
-    daysLeft += 7;
-  }
   seasonTimeLeft.innerHTML = "Time left of this season:" + daysLeft;
 }
-
-//TODO: Solution for no moves left
-//TODO: Link together the challenges and the front end
-//TODO: Can place blocks anywhere
-//TODO: Saving
-//TODO: MediaQuery for the tiles
-//TODO: Seasons outlines being passed to the points due to "children" element
-
-//Challanges
-let total = 0;
-
-class Challenge {
-  constructor(img, point, isActive, name, description) {
-    this.img = img;
-    this.point = point;
-    this.isActive = isActive;
-    this.name = name;
-    this.description = description;
-  }
-}
-
-const challenges = [];
-const borderlands = new Challenge("img/missions_eng/Borderlands.png", 6, false, "Borderlands", "For each full row or column you get six points.");
-const edgeOfTheForest = new Challenge("img/missions_eng/EdgeOfTheForest.png", 1, false, "Edge of the forest", "You get one point for each forest field adjacent to the edge of the map.");
-const emptySite = new Challenge("img/missions_eng/EmptySite.png", 2, false, "Empty site", "You get two points for empty fields adjacent to your village fields.");
-const magiciansValley = new Challenge("img/missions_eng/MagiciansValley.png", 3, false, "Magicians' valley", "You get tgree points for each of your water fields adjacent to your mountain fields.");
-const oddNumberedSilos = new Challenge("img/missions_eng/OddNumberedSilos.png", 10, false, "Odd numbered silos", "For each of your odd numbered full columns you get 10 points.");
-const richCountryside = new Challenge("img/missions_eng/RichCountryside.png", 4, false, "Rich countryside", "For each row with at least five different terrain types, you will recieve four points.");
-const rowOfHouses = new Challenge("img/missions_eng/RowOfHouses.png", 2, false, "Row of houses", "For each field in the longest village fields that are horizontally uninterrupted and contiguous you will get two points.");
-const sleepyValley = new Challenge("img/missions_eng/SleepyValley.png", 4, false, "Sleepy valley", "For every row with three forest fields, you get four points.");
-const treeLine = new Challenge("img/missions_eng/TreeLine.png", 2, false, "Tree line", "You get two points for each of the fields in the longest vertically uninterrupted continuous forest. If there are two or more tree lines with the same longest length, only one counts.");
-const wateringCanal = new Challenge("img/missions_eng/WateringCanal.png", 4, false, "Watering canal", "For each column of your map that has the same number of farm and water fields, you will recieve four points. You must have at least one field of both terrain types in your column to score points.");
-const wateringPotatoes = new Challenge("img/missions_eng/WateringPotatoes.png", 2, false, "Watering potatoes", "You get two points for each water field adjacent to your farm fields.");
-const wealthyTown = new Challenge("img/missions_eng/WealthyTown.png", 3, false, "Wealthy town", "You get three points for each of your village fields adjacent to at least three different terrain types.");
-
-challenges.push(borderlands, edgeOfTheForest, emptySite, magiciansValley, oddNumberedSilos, richCountryside, rowOfHouses, sleepyValley, treeLine, wateringCanal, wateringPotatoes, wealthyTown);
-
-const challengeImages = Array.from(document.getElementsByClassName('challengeImages'));
-const challengeNames = Array.from(document.getElementsByClassName('challengeNames'));
-const challengeDescriptions = Array.from(document.getElementsByClassName('challengeDescriptions'));
-
-function randomizeChallenges() {
-  challenges.sort(() => Math.random() - 0.5);
-}
-
-function selectChallenges() {
-  randomizeChallenges();
-  for (let i = 0; i < 4; i++) {
-    challengeImages[i].style.backgroundImage = `url('${challenges[i].img}')`;
-    challengeNames[i].innerHTML = challenges[i].name;
-    challengeDescriptions[i].innerHTML = challenges[i].description;
-  }
-}
-
-selectChallenges();
 
 function edgeOfTheForestCalculation() {
   let points = 0;
@@ -703,13 +774,23 @@ function borderlandsCalculation() {
   let points = 0;
   for (let i = 0; i < 11; i++) {
     let isRowFull = true;
+    let isColumnFull = true;
     for (let j = 0; j < 11; j++) {
       if (grid[i][j].className == "grid-item") {
         isRowFull = false;
         break;
       }
     }
+    for (let j = 0; j < 11; j++) {
+      if (grid[j][i].className == "grid-item") {
+        isColumnFull = false;
+        break;
+      }
+    }
     if (isRowFull) {
+      points += 6;
+    }
+    if (isColumnFull) {
       points += 6;
     }
   }
@@ -756,7 +837,6 @@ function wealthyTownCalculation() {
       }
       threshold = threshold.filter((item) => item != "grid-item");
       let uniques = new Set(threshold);
-      console.log(uniques);
       if (uniques.size >= 3) {
         points += 3;
       }
@@ -890,6 +970,34 @@ function richCountrysideCalculation() {
   return points;
 }
 
+function enclosedMountainCalculation() {
+  let points = 0;
+  let invalidMountain = false;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (grid[i][j].className == "mountainTile") {
+        if (grid[i - 1][j].className == "grid-item") {
+          invalidMountain = true;
+        }
+        if (grid[i + 1][j].className == "grid-item") {
+          invalidMountain = true;
+        }
+        if (grid[i][j - 1].className == "grid-item") {
+          invalidMountain = true;
+        }
+        if (grid[i][j + 1].className == "grid-item") {
+          invalidMountain = true;
+        }
+        if (!invalidMountain) {
+          points += 1;
+        }
+        invalidMountain = false;
+      }
+    }
+  }
+  return points;
+}
+
 //Utils
 function copyMatrix(source, destination) {
   for (let row = 0; row < 3; row++) {
@@ -911,3 +1019,9 @@ function deepCopyGrid(source, destination) {
     destination.push(Array.from(Row.children));
   }
 }
+
+//TODO: Solution for no moves left
+//TODO: Implement: if season has less than 2 days left and you draw a 2 day card your season ends
+//TODO: Can place blocks anywhere
+//TODO: Saving
+//TODO: MediaQuery down to 800px
