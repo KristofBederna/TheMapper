@@ -570,26 +570,51 @@ function canDraw(i, j) {
   if (i + 3 > 11 || j + 3 > 11) {
     for (let k = i; k < i + 3; k++) {
       for (let l = j; l < j + 3; l++) {
-        try {
-          grid[k][l].style.border = "dashed crimson";
-        } catch (error) { }
+        if (nextItemArray[k - i][l - j].className != "preview-item" && (k >= 11)) {
+          try {
+            for (let m = i; m < i + 3; m++) {
+              for (let n = j; n < j + 3; n++) {
+                grid[m][n].style.border = "dashed crimson";
+              }
+            }
+          } catch (error) {
+
+          }
+          canPlace = false;
+          return canPlace;
+        }
+        if (nextItemArray[k - i][l - j].className != "preview-item" && (l >= 11)) {
+          try {
+            for (let m = i; m < i + 3; m++) {
+              for (let n = j; n < j + 3; n++) {
+                grid[m][n].style.border = "dashed crimson";
+              }
+            }
+          } catch (error) {
+
+          }
+          canPlace = false;
+          return canPlace;
+        }
       }
     }
-    canPlace = false;
-    return canPlace;
   }
 
   //Ellenőrzi, hogy a 3x3-mas terület, ahová le akarjuk rakni, már tartalmaz-e olyan cellát, amiben van elem
   for (let k = i; k < i + 3; k++) {
     for (let l = j; l < j + 3; l++) {
-      grid[k][l].style.border = "dashed lightgreen";
-      if (backgroundGrid[k][l].className != "grid-item") {
-        //Ellenőrzi, hogy a 3x3-mas területen ütközne-e a cella egy olyan cellával, amit le akarunk rakni
-        if (nextItemArray[k - i][l - j].className != "preview-item") {
-          grid[k][l].style.border = "dashed crimson";
-          canPlace = false;
-          return canPlace;
+      try {
+        grid[k][l].style.border = "dashed lightgreen";
+        if (backgroundGrid[k][l].className != "grid-item") {
+          //Ellenőrzi, hogy a 3x3-mas területen ütközne-e a cella egy olyan cellával, amit le akarunk rakni
+          if (nextItemArray[k - i][l - j].className != "preview-item") {
+            grid[k][l].style.border = "dashed crimson";
+            canPlace = false;
+            return canPlace;
+          }
         }
+      } catch (exception) {
+
       }
     }
   }
@@ -1022,6 +1047,5 @@ function deepCopyGrid(source, destination) {
 
 //TODO: Solution for no moves left
 //TODO: Implement: if season has less than 2 days left and you draw a 2 day card your season ends
-//TODO: Can place blocks anywhere
 //TODO: Saving
 //TODO: MediaQuery down to 800px
